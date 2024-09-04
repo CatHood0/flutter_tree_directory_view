@@ -36,7 +36,7 @@ class _TreeViewState extends State<TreeView> {
     final dragController = context.watchDrag();
     if (controller.root.isNotEmpty) {
       return ListView(
-        shrinkWrap: true,
+        shrinkWrap: widget.shrinkWrap,
         controller: widget.scrollController,
         primary: widget.primary,
         clipBehavior: widget.clipBehavior ?? Clip.hardEdge,
