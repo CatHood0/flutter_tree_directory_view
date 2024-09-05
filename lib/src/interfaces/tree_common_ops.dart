@@ -117,7 +117,7 @@ mixin TreeOperations {
   /// Move the current selected node to the next position
   /// and its next sibling is moved to the old position
   /// of the current one
-  void moveBelow();
+  void moveDown();
 
   /// Move the current selected node to the before position
   /// and its next sibling is moved to the old position
