@@ -36,81 +36,50 @@ class TreeView extends StatefulWidget {
 }
 
 class _TreeViewState extends State<TreeView> {
-  late final FocusNode _focusNode;
-  @override
-  void initState() {
-    _focusNode = widget.focusNode ?? FocusNode();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final controller = context.watchTree();
     final dragController = context.watchDrag();
     if (controller.tree.isNotEmpty) {
-      return Focus(
-        focusNode: _focusNode,
-        autofocus: false,
-        onKeyEvent: (node, event) {
-          if (!controller.isFocused && controller.visualSelection == null) return KeyEventResult.ignored;
-          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            controller.moveUp();
-            return KeyEventResult.handled;
-          }
-          if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            controller.moveDown();
-            return KeyEventResult.handled;
-          }
-          //TODO: check if the user press arrow up or arrow down to move the
-          // visual selection to up or down using context.readTree().moveUp/moveDown()
-          return KeyEventResult.ignored;
-        },
-        child: ListView(
-          shrinkWrap: widget.shrinkWrap,
-          controller: widget.scrollController,
-          primary: widget.primary,
-          clipBehavior: widget.clipBehavior ?? Clip.hardEdge,
-          physics: widget.configuration.physics ?? const NeverScrollableScrollPhysics(),
-          children: <Widget>[
-            ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              physics: const NeverScrollableScrollPhysics(),
-              primary: false,
-              itemCount: controller.tree.length,
-              itemBuilder: (context, index) {
-                final TreeNode file = controller.tree.elementAt(index);
-                if (file is LeafTreeNode) {
-                  return LeafTreeNodeItemView(
-                    leafNode: file,
-                    parent: null,
-                    configuration: widget.configuration,
-                  );
-                } else
-                  return CompositeTreeNodeItemView(
-                    parent: null,
-                    compositeNode: file as CompositeTreeNode,
-                    configuration: widget.configuration,
-                    findFirstAncestorParent: () => null,
-                  );
-              },
-            ),
-            RootTargetToDropSection(
-              dragController: dragController,
-              configuration: widget.configuration,
-              controller: controller,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(bottom: 30),
-            ),
-          ],
-        ),
+      return ListView(
+        shrinkWrap: widget.shrinkWrap,
+        controller: widget.scrollController,
+        primary: widget.primary,
+        clipBehavior: widget.clipBehavior ?? Clip.hardEdge,
+        physics: widget.configuration.physics ?? const NeverScrollableScrollPhysics(),
+        children: <Widget>[
+          ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            physics: const NeverScrollableScrollPhysics(),
+            primary: false,
+            itemCount: controller.tree.length,
+            itemBuilder: (context, index) {
+              final TreeNode file = controller.tree.elementAt(index);
+              if (file is LeafTreeNode) {
+                return LeafTreeNodeItemView(
+                  leafNode: file,
+                  parent: null,
+                  configuration: widget.configuration,
+                );
+              } else
+                return CompositeTreeNodeItemView(
+                  parent: null,
+                  compositeNode: file as CompositeTreeNode,
+                  configuration: widget.configuration,
+                  findFirstAncestorParent: () => null,
+                );
+            },
+          ),
+          RootTargetToDropSection(
+            dragController: dragController,
+            configuration: widget.configuration,
+            controller: controller,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 30),
+          ),
+        ],
       );
     } else {
       if (widget.configuration.onDetectEmptyRoot != null) return widget.configuration.onDetectEmptyRoot!;

@@ -26,7 +26,7 @@ import '../../utils/search_tree_node_child.dart';
 
 abstract class BaseTreeController extends ChangeNotifier implements TreeOperations {
   @protected
-  Root root = Root(
+  _Root root = _Root(
     node: Node.withId(-1),
     children: List.from([]),
     nodeParent: 'no-parent-2023',
@@ -821,10 +821,10 @@ abstract class BaseTreeController extends ChangeNotifier implements TreeOperatio
 }
 
 /// Represents the root of the directory view
-class Root extends CompositeTreeNode<TreeNode> {
+class _Root extends CompositeTreeNode<TreeNode> {
   final StreamController<TreeStateChanges> _rootState = StreamController.broadcast();
 
-  Root({
+  _Root({
     required super.node,
     required super.children,
     required super.nodeParent,
@@ -863,7 +863,7 @@ class Root extends CompositeTreeNode<TreeNode> {
 
   @override
   CompositeTreeNode<TreeNode> clone() {
-    return Root(
+    return _Root(
       node: node,
       children: children,
       nodeParent: nodeParent,
@@ -872,8 +872,8 @@ class Root extends CompositeTreeNode<TreeNode> {
   }
 
   @override
-  Root copyWith({Node? node, List<TreeNode>? children, bool? isExpanded, String? nodeParent}) {
-    return Root(
+  _Root copyWith({Node? node, List<TreeNode>? children, bool? isExpanded, String? nodeParent}) {
+    return _Root(
       node: node ?? this.node,
       children: children ?? this.children,
       nodeParent: nodeParent ?? this.nodeParent,

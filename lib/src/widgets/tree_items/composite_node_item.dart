@@ -335,6 +335,7 @@ class _ExpandableCompositeNodeItemViewState extends State<ExpandableCompositeNod
                       child: InkWell(
                         splashColor: widget.configuration.compositeConfiguration.onTapSplashColor,
                         splashFactory: widget.configuration.compositeConfiguration.splashFactory,
+                        canRequestFocus: false,
                         borderRadius: widget.configuration.compositeConfiguration.borderSplashRadius ??
                             BorderRadius.circular(10),
                         customBorder: widget.configuration.compositeConfiguration.customSplashBorder,

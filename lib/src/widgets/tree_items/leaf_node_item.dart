@@ -216,6 +216,7 @@ class LeafTreeNodeItem extends StatelessWidget {
               ? null
               : () => configuration.leafConfiguration.onDoubleTap?.call(leafNode, context),
           hoverColor: configuration.leafConfiguration.onHoverColor,
+          canRequestFocus: false,
           mouseCursor: configuration.leafConfiguration.mouseCursor,
           onHover: (onHover) => configuration.leafConfiguration.onHover?.call(leafNode, onHover, context),
           onTap: () {

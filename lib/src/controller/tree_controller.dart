@@ -1,10 +1,8 @@
-import 'package:flutter_tree_view/src/entities/enums/move_to_position.dart';
 
 import '../entities/enums/log_level.dart';
 import '../entities/node/node.dart';
 import '../entities/tree/tree_operation.dart';
 import '../entities/tree_node/composite_tree_node.dart';
-import '../entities/tree_node/leaf_tree_node.dart';
 import '../entities/tree_node/tree_node.dart';
 import '../exceptions/invalid_node_update.dart';
 import '../exceptions/invalid_type_ref.dart';
@@ -266,103 +264,5 @@ class TreeController extends BaseTreeController {
       }
     }
     return null;
-  }
-
-  @override
-  bool moveSelectionToNextSibling() {
-    // TODO: implement moveSelectionToNextSibling
-    throw UnimplementedError();
-  }
-
-  @override
-  bool moveSelectionToUpSibling() {
-    // TODO: implement moveSelectionToUpSibling
-    throw UnimplementedError();
-  }
-
-  // moves the visual selection to the before child
-  // from the current one
-  @override
-  bool moveUp() {
-    if (!focused && visualSelection == null) return false;
-    return false;
-  }
-
-  // moves the visual selection to the next child
-  @override
-  bool moveDown() {
-    if (!focused && visualSelection == null) return false;
-    // This will confirm to where be moved the selection
-    MoveToPosition moveTo = MoveToPosition.noMove;
-    String? possibleNodeToMove;
-
-    bool confirmMove(List<TreeNode> children, String parentNodeId) {
-      for (int i = 0; i < children.length; i--) {
-        final node = children.elementAt(i);
-        if (node.id == currentSelectedNode?.id) {
-          if (node is LeafTreeNode || node is CompositeTreeNode && (!node.isExpanded || node.isEmpty)) {
-            moveTo = MoveToPosition.nextSibling;
-            // check if theres no child next
-            // then need to move to the next one
-            if (i + 1 >= children.length) {
-              // We need to move directly to the next sibling of the current 
-              // looped parent node id
-              // 
-              // Visual example of this issue
-              //
-              //  Parent node
-              //  | Child node 1
-              //  | Child node 2
-              //  | Sub Parent node 3 
-              //  | | Child node 1.1 
-              //  | | Child node 1.2 <= Assume that we are here by now. As you see, we need to move to the next sibling of the current parent 
-              //  | Child node 3 <= Using the parent id, we can move to its next child
-              //
-              // with this combination, the algorithm will move the selection after
-              // the node passed by [possibleNodeToMove]
-              moveTo = MoveToPosition.forward;
-              possibleNodeToMove = parentNodeId;
-              return true;
-            }
-            possibleNodeToMove = children.elementAtOrNull(i + 1)?.id;
-            return true;
-          } else if (node is CompositeTreeNode && node.isExpanded && node.isNotEmpty) {
-            // Move directly to the first child when needed
-            //
-            // You can see this like this example:
-            //
-            //  Parent node
-            //  | Child node 1
-            //  | Child node 2
-            //  | Sub Parent node 3 <= Assume that we are here by now. As you see, we need to move to the first child of this parent
-            //  | | Child node 1.1  <===> The position to we need to move
-            //  | | Child node 1.2
-            final firstChild = node.first;
-            // This combination says to the algorithm that we need to move
-            // into the node (for this we use possibleNodeToMove)
-            // of a [CompositeTreeNode]
-            moveTo = MoveToPosition.subChildOfComposite;
-            possibleNodeToMove = firstChild.id;
-            return true;
-          }
-        } else if (node is CompositeTreeNode && node.isExpanded && node.isNotEmpty) {
-          final isMoveConfirmed = confirmMove(node.children, node.id);
-          if (isMoveConfirmed) return true;
-        }
-      }
-      return false;
-    }
-
-    confirmMove(root.children, root.id);
-
-    if (moveTo == MoveToPosition.noMove || moveTo == MoveToPosition.firstNode) {
-      setVisualSelection(root.firstOrNull);
-      return true;
-    }
-
-    //TODO: here we need to search the next
-    // sibling to move visual selection
-
-    return false;
   }
 }
